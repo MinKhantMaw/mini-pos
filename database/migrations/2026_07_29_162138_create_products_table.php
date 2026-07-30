@@ -1,1 +1,31 @@
-<?php use Illuminate\Database\Migrations\Migration; use Illuminate\Database\Schema\Blueprint; use Illuminate\Support\Facades\Schema; return new class extends Migration { public function up():void{Schema::create('products',function(Blueprint $t){$t->id();$t->string('name');$t->string('sku')->unique();$t->string('category')->nullable()->index();$t->decimal('cost_price',15,2)->default(0);$t->decimal('selling_price',15,2)->default(0);$t->decimal('stock_quantity',15,3)->default(0);$t->string('unit',30)->default('pcs');$t->string('image')->nullable();$t->string('status',20)->default('active')->index();$t->decimal('low_stock_threshold',15,3)->default(5);$t->timestamps();$t->softDeletes();});} public function down():void{Schema::dropIfExists('products');} };
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('sku')->unique();
+            $table->string('category')->nullable();
+            $table->decimal('cost_price', 15, 2);
+            $table->decimal('selling_price', 15, 2);
+            $table->integer('stock_quantity')->default(0);
+            $table->string('unit')->default('pcs');
+            $table->string('image')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('products');
+    }
+};

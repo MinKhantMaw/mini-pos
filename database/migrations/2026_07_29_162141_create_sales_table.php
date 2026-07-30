@@ -1,1 +1,33 @@
-<?php use Illuminate\Database\Migrations\Migration; use Illuminate\Database\Schema\Blueprint; use Illuminate\Support\Facades\Schema; return new class extends Migration { public function up():void{Schema::create('sales',function(Blueprint $t){$t->id();$t->foreignId('user_id')->nullable()->constrained()->nullOnDelete();$t->string('customer_name')->index();$t->string('phone',50)->nullable();$t->text('address')->nullable();$t->date('sale_date')->index();$t->decimal('subtotal',15,2)->default(0);$t->decimal('discount',15,2)->default(0);$t->decimal('delivery_fee',15,2)->default(0);$t->decimal('total_amount',15,2)->default(0);$t->string('payment_method',30)->default('cash');$t->string('payment_status',20)->default('unpaid')->index();$t->timestamps();$t->softDeletes();});} public function down():void{Schema::dropIfExists('sales');} };
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('sales', function (Blueprint $table) {
+            $table->id();
+            $table->string('invoice_number')->unique();
+            $table->string('customer_name');
+            $table->string('customer_phone')->nullable();
+            $table->text('customer_address')->nullable();
+            $table->date('sale_date');
+            $table->decimal('subtotal', 15, 2);
+            $table->decimal('discount', 15, 2)->default(0);
+            $table->decimal('delivery_fee', 15, 2)->default(0);
+            $table->decimal('total_amount', 15, 2);
+            $table->enum('payment_method', ['cash', 'bank_transfer', 'cod'])->default('cash');
+            $table->enum('payment_status', ['paid', 'unpaid', 'partial'])->default('unpaid');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('sales');
+    }
+};

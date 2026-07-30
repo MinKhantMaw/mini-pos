@@ -1,1 +1,27 @@
-<?php use Illuminate\Database\Migrations\Migration; use Illuminate\Database\Schema\Blueprint; use Illuminate\Support\Facades\Schema; return new class extends Migration { public function up():void{Schema::create('purchases',function(Blueprint $t){$t->id();$t->foreignId('user_id')->nullable()->constrained()->nullOnDelete();$t->string('supplier_name')->index();$t->date('purchase_date')->index();$t->decimal('total_amount',15,2)->default(0);$t->string('payment_status',20)->default('unpaid')->index();$t->text('notes')->nullable();$t->timestamps();$t->softDeletes();});} public function down():void{Schema::dropIfExists('purchases');} };
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('purchases', function (Blueprint $table) {
+            $table->id();
+            $table->string('supplier_name');
+            $table->date('purchase_date');
+            $table->decimal('total_amount', 15, 2);
+            $table->enum('payment_status', ['paid', 'unpaid', 'partial'])->default('unpaid');
+            $table->text('notes')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('purchases');
+    }
+};

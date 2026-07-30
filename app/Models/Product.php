@@ -1,4 +1,29 @@
 <?php
+
 namespace App\Models;
-use Illuminate\Database\Eloquent\Factories\HasFactory; use Illuminate\Database\Eloquent\Model; use Illuminate\Database\Eloquent\Relations\HasMany; use Illuminate\Database\Eloquent\SoftDeletes;
-class Product extends Model { use HasFactory,SoftDeletes; protected $fillable=['name','sku','category','cost_price','selling_price','stock_quantity','unit','image','status','low_stock_threshold']; protected function casts():array{return ['cost_price'=>'decimal:2','selling_price'=>'decimal:2','stock_quantity'=>'decimal:3','low_stock_threshold'=>'decimal:3'];} public function purchaseItems():HasMany{return $this->hasMany(PurchaseItem::class);} public function saleItems():HasMany{return $this->hasMany(SaleItem::class);} }
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Product extends Model
+{
+    use SoftDeletes;
+
+    protected $fillable = ['name', 'sku', 'category', 'cost_price', 'selling_price', 'stock_quantity', 'unit', 'image', 'status'];
+
+    protected function casts(): array
+    {
+        return ['cost_price' => 'decimal:2', 'selling_price' => 'decimal:2', 'stock_quantity' => 'integer'];
+    }
+
+    public function purchaseItems(): HasMany
+    {
+        return $this->hasMany(PurchaseItem::class);
+    }
+
+    public function saleItems(): HasMany
+    {
+        return $this->hasMany(SaleItem::class);
+    }
+}

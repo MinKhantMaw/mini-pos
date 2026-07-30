@@ -1,0 +1,1 @@
+<script>function lines(products, priceKey){return {items:[{product_id:'',quantity:1,price:0}],setPrice(item){let p=products.find(p=>p.id==item.product_id);if(p)item.price=p[priceKey]},total(){return this.items.reduce((sum,i)=>sum+(Number(i.quantity)||0)*(Number(i.price)||0),0).toFixed(2)}}}</script>
