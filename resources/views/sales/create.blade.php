@@ -2,7 +2,7 @@
     <x-slot name="title">New Sale</x-slot>
     <div x-data="saleForm({{ Js::from($products) }})" class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
         <form method="POST" action="{{ route('sales.store') }}"
-            class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+            class="space-y-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
             @csrf
             @error('items')
                 <div class="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{{ $message }}</div>
@@ -10,61 +10,61 @@
             <div class="grid gap-4 md:grid-cols-2">
                 <label class="block text-sm font-medium text-slate-600">
                     <span class="mb-1 block">Customer name</span>
-                    <input class="w-full rounded-lg border-slate-300" name="customer_name" required>
+                    <input class="w-full rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" name="customer_name" value="{{ old('customer_name') }}" required>
                 </label>
                 <label class="block text-sm font-medium text-slate-600">
                     <span class="mb-1 block">Phone</span>
-                    <input class="w-full rounded-lg border-slate-300" name="customer_phone">
+                    <input class="w-full rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" name="customer_phone" value="{{ old('customer_phone') }}">
                 </label>
                 <label class="block text-sm font-medium text-slate-600 md:col-span-2">
                     <span class="mb-1 block">Address</span>
-                    <textarea class="w-full rounded-lg border-slate-300" name="customer_address"></textarea>
+                    <textarea class="w-full rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" name="customer_address">{{ old('customer_address') }}</textarea>
                 </label>
                 <label class="block text-sm font-medium text-slate-600">
                     <span class="mb-1 block">Sale date</span>
-                    <input class="w-full rounded-lg border-slate-300" type="date" name="sale_date"
-                        value="{{ now()->toDateString() }}" required>
+                    <input class="w-full rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" type="date" name="sale_date"
+                        value="{{ old('sale_date', now()->toDateString()) }}" required>
                 </label>
                 <label class="block text-sm font-medium text-slate-600">
                     <span class="mb-1 block">Payment method</span>
-                    <select class="w-full rounded-lg border-slate-300" name="payment_method">
-                        <option value="cash">Cash</option>
-                        <option value="bank_transfer">Bank transfer</option>
-                        <option value="cod">COD</option>
+                    <select class="w-full rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" name="payment_method">
+                        <option value="cash" @selected(old('payment_method') === 'cash')>Cash</option>
+                        <option value="bank_transfer" @selected(old('payment_method') === 'bank_transfer')>Bank transfer</option>
+                        <option value="cod" @selected(old('payment_method') === 'cod')>COD</option>
                     </select>
                 </label>
                 <label class="block text-sm font-medium text-slate-600">
                     <span class="mb-1 block">Payment status</span>
-                    <select class="w-full rounded-lg border-slate-300" name="payment_status">
-                        <option value="unpaid">Unpaid</option>
-                        <option value="paid">Paid</option>
-                        <option value="partial">Partial</option>
+                    <select class="w-full rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" name="payment_status">
+                        <option value="unpaid" @selected(old('payment_status') === 'unpaid')>Unpaid</option>
+                        <option value="paid" @selected(old('payment_status') === 'paid')>Paid</option>
+                        <option value="partial" @selected(old('payment_status') === 'partial')>Partial</option>
                     </select>
                 </label>
                 <label class="block text-sm font-medium text-slate-600">
                     <span class="mb-1 block">Discount</span>
-                    <input class="w-full rounded-lg border-slate-300" type="number" step="0.01" min="0"
-                        name="discount" value="0">
+                    <input class="w-full rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" type="number" step="0.01" min="0"
+                        name="discount" value="{{ old('discount', 0) }}">
                 </label>
                 <label class="block text-sm font-medium text-slate-600">
                     <span class="mb-1 block">Delivery fee</span>
-                    <input class="w-full rounded-lg border-slate-300" type="number" step="0.01" min="0"
-                        name="delivery_fee" value="0">
+                    <input class="w-full rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" type="number" step="0.01" min="0"
+                        name="delivery_fee" value="{{ old('delivery_fee', 0) }}">
                 </label>
             </div>
 
-            <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
                 <div class="mb-3 flex items-center justify-between">
                     <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Products</h3>
                     <button type="button"
-                        class="rounded-full bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white"
+                        class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700"
                         @click="addLine()">+ Add item</button>
                 </div>
                 <div class="grid gap-2">
                     <template x-for="(item, index) in items" :key="index">
                         <div
                             class="grid gap-2 rounded-lg border border-slate-200 bg-white p-3 md:grid-cols-[1.4fr_0.8fr_0.8fr_auto]">
-                            <select class="rounded-lg border-slate-300" :name="`items[${index}][product_id]`"
+                            <select class="rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" :name="`items[${index}][product_id]`"
                                 x-model="item.product_id" @change="setPrice(item)">
                                 <option value="">Choose product</option>
                                 <template x-for="product in products" :key="product.id">
@@ -72,22 +72,22 @@
                                         x-text="`${product.name} (${product.stock_quantity} ${product.unit})`"></option>
                                 </template>
                             </select>
-                            <input class="rounded-lg border-slate-300" type="number" min="1"
+                            <input class="rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" type="number" min="1"
                                 :name="`items[${index}][quantity]`" x-model.number="item.quantity">
-                            <input class="rounded-lg border-slate-300" type="number" step="0.01" min="0"
+                            <input class="rounded-lg border-slate-300 focus:border-emerald-500 focus:ring-emerald-500" type="number" step="0.01" min="0"
                                 :name="`items[${index}][selling_price]`" x-model.number="item.price">
                             <button type="button"
-                                class="rounded-lg border border-slate-200 px-3 text-sm font-medium text-rose-600"
+                                class="rounded-lg border border-slate-200 px-3 text-sm font-medium text-rose-600 hover:bg-rose-50"
                                 @click="removeLine(index)">Remove</button>
                         </div>
                     </template>
                 </div>
             </div>
 
-            <button class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Record sale</button>
+            <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Record sale</button>
         </form>
 
-        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+        <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
             <h3 class="text-lg font-semibold">Order summary</h3>
             <p class="mt-1 text-sm text-slate-500">Live totals update here before the server validates the order.</p>
             <div class="mt-4 space-y-3">
