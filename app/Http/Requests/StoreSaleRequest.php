@@ -1,1 +1,18 @@
-<?php namespace App\Http\Requests; use Illuminate\Foundation\Http\FormRequest; class StoreSaleRequest extends FormRequest { public function authorize():bool{return true;} public function rules():array{return ['customer_name'=>['required','string','max:255'],'phone'=>['nullable','string','max:50'],'address'=>['nullable','string'],'sale_date'=>['required','date'],'discount'=>['nullable','decimal:0,2','min:0'],'delivery_fee'=>['nullable','decimal:0,2','min:0'],'payment_method'=>['required','in:cash,bank_transfer,cod'],'payment_status'=>['required','in:paid,unpaid,partial'],'items'=>['required','array','min:1'],'items.*.product_id'=>['required','integer','distinct','exists:products,id'],'items.*.quantity'=>['required','decimal:0,3','gt:0'],'items.*.selling_price'=>['required','decimal:0,2','min:0']];} }
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreSaleRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return ['customer_name' => ['required', 'string', 'max:255'], 'customer_phone' => ['nullable', 'string', 'max:255'], 'customer_address' => ['nullable', 'string'], 'sale_date' => ['required', 'date'], 'discount' => ['nullable', 'decimal:0,2', 'min:0'], 'delivery_fee' => ['nullable', 'decimal:0,2', 'min:0'], 'payment_method' => ['required', 'in:cash,bank_transfer,cod'], 'payment_status' => ['required', 'in:paid,unpaid,partial'], 'items' => ['required', 'array', 'min:1'], 'items.*.product_id' => ['required', 'integer', 'distinct', 'exists:products,id'], 'items.*.quantity' => ['required', 'integer', 'min:1'], 'items.*.selling_price' => ['required', 'decimal:0,2', 'min:0']];
+    }
+}

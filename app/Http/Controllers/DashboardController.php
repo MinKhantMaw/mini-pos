@@ -1,1 +1,25 @@
-<?php namespace App\Http\Controllers; use App\Models\Product;use App\Models\Purchase;use App\Models\Sale;use Illuminate\Support\Facades\DB; class DashboardController extends Controller { public function __invoke(){return view('dashboard',['monthlySales'=>Sale::whereBetween('sale_date',[now()->startOfMonth(),now()->endOfMonth()])->sum('total_amount'),'monthlyPurchases'=>Purchase::whereBetween('purchase_date',[now()->startOfMonth(),now()->endOfMonth()])->sum('total_amount'),'unpaid'=>Sale::whereIn('payment_status',['unpaid','partial'])->sum('total_amount'),'lowStock'=>Product::whereColumn('stock_quantity','<=','low_stock_threshold')->get(),'recentSales'=>Sale::with('invoice')->latest('sale_date')->take(5)->get(),'recentPurchases'=>Purchase::latest('purchase_date')->take(5)->get()]);} }
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Product;
+use App\Models\Purchase;
+use App\Models\Sale;
+
+class DashboardController extends Controller
+{
+    public function index()
+    {
+        $monthlySales = Sale::whereBetween('sale_date', [now()->startOfMonth(), now()->endOfMonth()])->sum('total_amount');
+        $monthlyPurchases = Purchase::whereBetween('purchase_date', [now()->startOfMonth(), now()->endOfMonth()])->sum('total_amount');
+        $monthlyProfit = $monthlySales - $monthlyPurchases;
+
+        return view('dashboard.index', [
+            'monthlySales' => $monthlySales,
+            'monthlyPurchases' => $monthlyPurchases,
+            'monthlyProfit' => $monthlyProfit,
+            'unpaidInvoices' => Sale::whereIn('payment_status', ['unpaid', 'partial'])->count(),
+            'lowStockProducts' => Product::where('stock_quantity', '<', 5)->get(),
+        ]);
+    }
+}

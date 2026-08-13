@@ -1,1 +1,27 @@
-<?php namespace App\Http\Controllers; use App\Models\Invoice;use Barryvdh\DomPDF\Facade\Pdf; class InvoiceController extends Controller { public function show(Invoice $invoice){$invoice->load('sale.items.product');return view('invoices.show',compact('invoice'));}public function pdf(Invoice $invoice){$invoice->load('sale.items.product');return Pdf::loadView('invoices.pdf',compact('invoice'))->download($invoice->invoice_number.'.pdf');} }
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Sale;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+class InvoiceController extends Controller
+{
+    public function show(Sale $sale)
+    {
+        $sale->load('items.product');
+
+        return view('invoices.show', compact('sale'));
+    }
+
+    public function downloadPdf(Sale $sale)
+    {
+        $sale->load('items.product');
+
+        return Pdf::loadView('invoices.pdf', compact('sale'))
+            ->setOption('isRemoteEnabled', true)
+            ->setOption('isPhpEnabled', false)
+            ->setOption('chroot', realpath(base_path()))
+            ->download("invoice-{$sale->invoice_number}.pdf");
+    }
+}

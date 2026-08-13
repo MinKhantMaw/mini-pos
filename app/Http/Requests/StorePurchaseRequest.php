@@ -1,1 +1,18 @@
-<?php namespace App\Http\Requests; use Illuminate\Foundation\Http\FormRequest; class StorePurchaseRequest extends FormRequest { public function authorize():bool{return true;} public function rules():array{return ['supplier_name'=>['required','string','max:255'],'purchase_date'=>['required','date'],'payment_status'=>['required','in:paid,unpaid,partial'],'notes'=>['nullable','string'],'items'=>['required','array','min:1'],'items.*.product_id'=>['required','integer','distinct','exists:products,id'],'items.*.quantity'=>['required','decimal:0,3','gt:0'],'items.*.cost_price'=>['required','decimal:0,2','min:0']];} }
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StorePurchaseRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return ['supplier_name' => ['required', 'string', 'max:255'], 'purchase_date' => ['required', 'date'], 'payment_status' => ['required', 'in:paid,unpaid,partial'], 'notes' => ['nullable', 'string'], 'items' => ['required', 'array', 'min:1'], 'items.*.product_id' => ['required', 'integer', 'distinct', 'exists:products,id'], 'items.*.quantity' => ['required', 'integer', 'min:1'], 'items.*.cost_price' => ['required', 'decimal:0,2', 'min:0']];
+    }
+}
