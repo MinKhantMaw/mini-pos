@@ -16,7 +16,7 @@ class PurchaseController extends Controller
 
     public function create()
     {
-        return view('purchases.create', ['products' => Product::where('status', 'active')->orderBy('name')->get()]);
+        return view('purchases.create', ['products' => Product::with('category')->where('status', 'active')->orderBy('name')->get()]);
     }
 
     public function store(StorePurchaseRequest $request, RecordPurchaseService $service)

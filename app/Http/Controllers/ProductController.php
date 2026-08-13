@@ -4,26 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('products.index', ['products' => Product::latest()->paginate(15)]);
+        $categories = Category::orderBy('name')->get();
+        $products = Product::with('category')
+            ->when($request->filled('category_id'), function ($query) use ($request) {
+                $query->where('category_id', $request->integer('category_id'));
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('products.index', compact('products', 'categories'));
     }
 
     public function create()
     {
-        return view('products.create');
+        $categories = Category::orderBy('name')->get();
+
+        return view('products.create', compact('categories'));
     }
 
     public function store(StoreProductRequest $request)
     {
         $data = $request->validated();
-        if (blank($data['stock_quantity'] ?? null)) {
-            $data['stock_quantity'] = 0;
-        }
+        $data['stock_quantity'] = 0;
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
         }
@@ -39,15 +50,14 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return view('products.edit', compact('product'));
+        $categories = Category::orderBy('name')->get();
+
+        return view('products.edit', compact('product', 'categories'));
     }
 
     public function update(UpdateProductRequest $request, Product $product)
     {
         $data = $request->validated();
-        if (blank($data['stock_quantity'] ?? null)) {
-            $data['stock_quantity'] = 0;
-        }
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
         }
